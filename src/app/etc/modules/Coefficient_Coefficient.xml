@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <modules>
+        <Coefficient_Coefficient>
+
+            <!-- active or not? -->
+            <active>true</active>
+
+            <!-- which code pool to use? community or local? -->
+            <codePool>local</codePool>
+
+        </Coefficient_Coefficient>
+
+    </modules>
+</config>
