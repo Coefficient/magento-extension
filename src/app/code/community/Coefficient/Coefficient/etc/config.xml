@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+
+<config>
+    <modules>
+        <!-- Contains basic info about each Magento module. -->
+
+        <Coefficient_Coefficient>
+            <version>0.0.1</version>
+
+        </Coefficient_Coefficient>
+
+    </modules>
+
+    <!-- Configure our module's behavior in the global scope. -->
+    <global>
+        <coefficient>
+            <banana_url>http://coefficientinc.com/fruits/banana</banana_url>
+        </coefficient>
+        <!-- Defining models. -->
+        <models>
+            <coefficient>
+                <class>Coefficient_Coefficient_Model</class>
+            </coefficient>
+        </models>
+
+        <helpers>
+            <coefficient>
+                <class>Coefficient_Coefficient_Helper</class>
+            </coefficient>
+        </helpers>
+
+    </global>
+    <frontend>
+        <routers>
+            <coefficient> <!-- the lowercase version of our module name. -->
+                <use>standard</use>
+                <args>
+                    <module>Coefficient_Coefficient</module>
+                    <frontName>coefficient</frontName>
+                </args>
+
+                
+
+            </coefficient>
+
+        </routers>
+    </frontend>
+    <admin>
+        <routers>
+            <coefficient>
+                <use>admin</use>
+                <args>
+                    <module>Coefficient_Coefficient</module>
+                    <frontName>coefficient</frontName>
+                </args>
+            </coefficient>
+
+            <adminhtml>
+                <use>admin</use>
+                <args>
+                    <modules>
+                        <Coefficient_Coefficient_Adminhtml before="Mage_Adminhtml">Coefficient_Coefficient_Adminhtml</Coefficient_Coefficient_Adminhtml>
+                    </modules>
+                    <!--<module>Coefficient_Adminhello</module>-->
+                    <!--<frontName>adminhellox</frontName>-->
+                </args>
+            </adminhtml>
+
+        </routers>
+    </admin>
+
+
+    <adminhtml>
+        <layout>
+            <updates>
+                <coefficient>
+                    <file>coefficient.xml</file>
+                </coefficient>
+            </updates>
+        </layout>
+    </adminhtml>
+
+</config>

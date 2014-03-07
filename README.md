@@ -1,0 +1,1 @@
+# Coefficient Extension for Magento
