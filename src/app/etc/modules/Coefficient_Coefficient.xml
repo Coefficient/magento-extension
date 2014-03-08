@@ -7,7 +7,7 @@
             <active>true</active>
 
             <!-- which code pool to use? community or local? -->
-            <codePool>local</codePool>
+            <codePool>community</codePool>
 
         </Coefficient_Coefficient>
 
