@@ -11,7 +11,7 @@
             <!--block type="coefficient/adminhtml_dashboard" name="coefficient_dashboard">
                 <block type="coefficient/adminhtml_dashboard_grids" name="coefficient_dashboard_grids" />
             </block-->
-            <block type="adminhtml/template" name="adminhtml" template="coefficient/coefficient.phtml"/>
+            <block type="adminhtml/template" name="adminhtml" template="coefficient/settings.phtml"/>
         </reference>
 
     </adminhtml_coefficient_index>
