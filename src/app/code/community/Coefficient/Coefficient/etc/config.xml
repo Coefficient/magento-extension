@@ -71,6 +71,26 @@
 
 
     <adminhtml>
+        <acl>
+            <resources>
+                <admin>
+                    <children>
+                        <system>
+                            <children>
+                                <config>
+                                    <children>
+                                        <coefficient_options>
+                                            <title>Store Hello World Module Section</title>
+                                        </coefficient_options>
+                                    </children>
+                                </config>
+                            </children>
+                        </system>
+                    </children>
+                </admin>
+            </resources>
+        </acl> 
+
         <layout>
             <updates>
                 <coefficient>
