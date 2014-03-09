@@ -1,0 +1,19 @@
+<config>
+    <tabs>
+        <coefficient_extension module="coefficient">
+            <label>Coefficient</label>
+            <sort_order>99999</sort_order>
+        </coefficient_extension>
+    </tabs>
+    <sections>
+        <coefficient_options translate="label" module="coefficient">
+            <label>Coefficient Options</label>
+            <tab>coefficient_extension</tab>
+            <frontend_type>text</frontend_type>
+            <sort_order>1000</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+        </coefficient_options>
+    </sections>
+</config>
