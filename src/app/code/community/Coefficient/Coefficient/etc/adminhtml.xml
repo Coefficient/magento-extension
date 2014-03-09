@@ -1,32 +1,18 @@
 <config>
-    <menu>
-         <coefficient translate="title" module="coefficient">
-            <title>Coefficient</title>
-            <sort_order>9999</sort_order>
-            <children>
-                <example>
-                    <title>Example</title>
-                    <sort_order>1</sort_order>
-                    <action>adminhtml/coefficient/index</action>
-                </example>
-            </children>
-        </coefficient>
-    </menu>
+
     <acl>
-            <!-- http://alanstorm.com/magento_admin_hello_world_revisited -->
         <resources>
             <admin>
                 <children>
-                    <coefficient translate="title" module="coefficient">
-                        <title>Top Level Coefficient Menu Item</title>
-                        <sort_order>1</sort_order>
+                    <system>
                         <children>
-                            <example>
-                                <title>Example Menu Item</title>
-                            </example>
+                            <config>
+                                <coefficient_options>
+                                    <title>Coefficient Section Options</title>
+                                </coefficient_options>
+                            </config>
                         </children>
-
-                    </coefficient>
+                    </system>
                 </children>
             </admin>
         </resources>
