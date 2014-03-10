@@ -23,14 +23,6 @@
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
                     <fields>
-                        <hello_message>
-                            <label>Message</label>
-                            <frontend_type>text</frontend_type>
-                            <sort_order>1</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </hello_message>
                         <enabled translate="label">
                             <label>API Enabled</label>
                             <frontend_type>select</frontend_type>
@@ -40,14 +32,15 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </enabled>
-                        <token translate="label">
-                            <label>API Token</label>
-                            <frontend_type>label</frontend_type>
+                        <apikey translate="label">
+                            <label>API Key</label>
+                            <frontend_type>text</frontend_type>
                             <sort_order>3</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
-                        </token>
+                            <depends><enabled>1</enabled></depends>
+                        </apikey>
                         <banana translate="label">
                             <label>Generate New API Key</label>
                             <button_label>Hit Me</button_label>
@@ -56,6 +49,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
+                            <depends><enabled>1</enabled></depends>
                         </banana>
                     </fields>
                 </messages>
