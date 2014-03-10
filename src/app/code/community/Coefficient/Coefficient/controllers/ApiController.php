@@ -28,7 +28,7 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
             return false;
         }*/
 
-        $apiKey = getRequestApiKey();
+        $apiKey = $this->getRequestApiKey();
 
         if (!$apiKey) {
             $this->notAuthorized();
