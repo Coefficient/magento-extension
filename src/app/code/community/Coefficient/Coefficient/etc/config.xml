@@ -115,14 +115,12 @@
         </layout>
     </adminhtml>
 
-    <!--default>
-        <coefficient_options>
-            <options>
-                <apikey>
-                    <model>coefficient/adminhtml_banana</model>
-                </apikey>
-            </options>
-        </coefficient_options>
-    </default-->
+    <default>
+        <coefficient>
+            <api>
+                <enabled>1</enabled> 
+            </api>
+        </coefficient>
+    </default>
 
 </config>

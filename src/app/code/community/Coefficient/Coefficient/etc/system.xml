@@ -35,7 +35,7 @@
                         <apikey translate="label">
                             <label>API Key</label>
                             <frontend_type>text</frontend_type>
-                            <!--frontend_model>coefficient/adminhtml_apikey</frontend_model-->
+                            <!--frontend_model>coefficient/adminhtml_disabledinput</frontend_model-->
                             <!--comment>Save this in your Magento settings in Coefficient.</comment-->
                             <sort_order>3</sort_order>
                             <show_in_default>1</show_in_default>
