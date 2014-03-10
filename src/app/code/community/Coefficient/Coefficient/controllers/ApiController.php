@@ -1,14 +1,60 @@
 <?php
 
-class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_Action {
+class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_Action
+{
 
-    public function authenticate() {
+    private function notAuthorized()
+    {
+        $this->getResponse()->setHttpResponseCode(403);
+    }
+
+    private function getRequestApiKey()
+    {
+        $auth_header = $this->getRequest()->getHeader('Authorization');
+
+        $matches = array();
+        preg_match('/token apiKey="(.+)"/', $auth_header, $matches);
+        if (isset($matches[1])) {
+            return trim($matches[1]);
+        }
+        return null;
+    }
+
+    private function authorize()
+    {
+        /*if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on') {
+            $this->notAuthorized();
+            Mage::log("HTTPS isn't on.");
+            return false;
+        }*/
+
+        $apiKey = getRequestApiKey();
+
+        if (!$apiKey) {
+            $this->notAuthorized();
+            Mage::log("No API key in request authorization header.");
+            return false;
+        }
+        
+        if ($matches[1] != Mage::helper('coefficient')->getApiKey()) {
+            $this->notAuthorized();
+            Mage::log("API keys don't match.");
+            return false;
+        }
+        
+        if (!Mage::getStoreConfig('coefficient/api/enabled')) {
+            $this->notAuthorized();
+            Mage::log("API access isn't enabled.");
+            return false;
+        }
+
         return true;
     }
 
-    public function customersAction() {
-        if (!$this->authenticate()) {
-            return $this; // Why?
+    public function customersAction()
+    {
+        if (!$this->authorize()) {
+            return $this;
         }
 
         #$customers = array(array('name' => 'Skyler', 'job' => 'Programmer'),
@@ -46,7 +92,7 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
     }
 
     public function ordersAction() {
-        if (!$this->authenticate()) {
+        if (!$this->authorize()) {
             return $this;
         }
 

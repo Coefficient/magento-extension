@@ -11,10 +11,7 @@ class Coefficient_Coefficient_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function getApiKey()
     {
-        $apiKey = getStoreConfig(self::APIKEY_CONFIG_KEY, 0);
-        if (!$apiKey) {
-            $this->generateApiKey();
-        }
+        return getStoreConfig(self::APIKEY_CONFIG_KEY, 0);
     }
 
     public function generateApiKey()
