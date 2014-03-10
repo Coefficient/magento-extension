@@ -5,7 +5,7 @@
         <!-- Contains basic info about each Magento module. -->
 
         <Coefficient_Coefficient>
-            <version>0.0.1</version>
+            <version>0.0.5</version>
 
         </Coefficient_Coefficient>
 
@@ -34,6 +34,15 @@
                 <class>Coefficient_Coefficient_Block</class>
             </coefficient>
         </blocks>
+
+        <resources>
+            <Coefficient_Coefficient>
+                <setup>
+                    <module>Coefficient_Coefficient</module>
+                    <class>Mage_Core_Model_Resource_Setup</class>
+                </setup>
+            </Coefficient_Coefficient>
+        </resources>
 
     </global>
     <frontend>
@@ -85,9 +94,9 @@
                             <children>
                                 <config>
                                     <children>
-                                        <coefficient_options>
+                                        <coefficient>
                                             <title>Store Hello World Module Section</title>
-                                        </coefficient_options>
+                                        </coefficient>
                                     </children>
                                 </config>
                             </children>
@@ -105,5 +114,15 @@
             </updates>
         </layout>
     </adminhtml>
+
+    <!--default>
+        <coefficient_options>
+            <options>
+                <apikey>
+                    <model>coefficient/adminhtml_banana</model>
+                </apikey>
+            </options>
+        </coefficient_options>
+    </default-->
 
 </config>

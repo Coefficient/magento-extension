@@ -6,7 +6,7 @@
         </coefficient_extension>
     </tabs>
     <sections>
-        <coefficient_options translate="label" module="coefficient">
+        <coefficient translate="label" module="coefficient">
             <label>Coefficient Options</label>
             <tab>coefficient_extension</tab>
             <frontend_type>text</frontend_type>
@@ -15,8 +15,8 @@
             <show_in_website>1</show_in_website>
             <show_in_store>1</show_in_store>
             <groups>
-                <messages translate="label">
-                    <label>Demo of Config Fields</label>
+                <api translate="label">
+                    <label>Coefficient Options</label>
                     <frontend_type>text</frontend_type>
                     <sort_order>1</sort_order>
                     <show_in_default>1</show_in_default>
@@ -35,6 +35,8 @@
                         <apikey translate="label">
                             <label>API Key</label>
                             <frontend_type>text</frontend_type>
+                            <!--frontend_model>coefficient/adminhtml_apikey</frontend_model-->
+                            <!--comment>Save this in your Magento settings in Coefficient.</comment-->
                             <sort_order>3</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
@@ -52,9 +54,9 @@
                             <depends><enabled>1</enabled></depends>
                         </banana>
                     </fields>
-                </messages>
+                </api>
             </groups>
 
-        </coefficient_options>
+        </coefficient>
     </sections>
 </config>
