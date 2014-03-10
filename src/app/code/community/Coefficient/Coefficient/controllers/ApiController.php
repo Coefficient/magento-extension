@@ -5,7 +5,10 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
 
     private function notAuthorized()
     {
-        $this->getResponse()->setHttpResponseCode(403);
+        error_log("sending HTTP 403");
+        Mage::helper('coefficient')->log("sending HTTP 403");
+        $this->getResponse()->setHttpResponseCode(403)
+            ->setBody("Not authorized.");
     }
 
     private function getRequestApiKey()
@@ -36,7 +39,7 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
             return false;
         }
         
-        if ($matches[1] != Mage::helper('coefficient')->getApiKey()) {
+        if ($apiKey != Mage::helper('coefficient')->getApiKey()) {
             $this->notAuthorized();
             Mage::log("API keys don't match.");
             return false;
