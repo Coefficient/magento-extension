@@ -29,6 +29,12 @@
             </coefficient>
         </helpers>
 
+        <blocks>
+            <coefficient>
+                <class>Coefficient_Coefficient_Block</class>
+            </coefficient>
+        </blocks>
+
     </global>
     <frontend>
         <routers>
