@@ -11,6 +11,8 @@ class Coefficient_Coefficient_Model_Customer
         $this->last_name = $customer->getLastName();
         $this->birthday = $customer->getDob();
         $this->gender = $customer->getGender();
+        $this->banana = $customer->getBanana();
+        $this->city = $customer->getCity();
 
         return $this;
     }

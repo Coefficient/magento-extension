@@ -70,16 +70,25 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
         $config = Mage::getConfig();
         $banana_url = $config->getNode('coefficient/banana_url');
 
-        $customers = Mage::getModel('customer/customer')->getCollection();
-        $this->customers = array();
-        foreach ($customers as $customer) {
-            error_log("customer id is " . $customer->getId());
-            $this->customers[] = Mage::getModel('coefficient/customer')->parseCustomer($customer);
-        }
+        $customers = Mage::getModel('coefficient/customers')->loadCustomers();
+
+        #$customers = Mage::getModel('customer/customer')->getCollection();
+        #$this->customers = array();
+        #foreach ($customers as $customer) {
+        #    #error_log("customer id is " . $customer->getId());
+        #    $details = Mage::getModel('customer/customer')->load($customer->getId());
+
+        #    if ($details->getAddressId()) {
+        #        $address = Mage::getModel('customer/address')->load($details->getAddressId());
+        #        error_log($address->getData('street'));
+        #    }
+
+        #    $this->customers[] = Mage::getModel('coefficient/customer')->parseCustomer($details);
+        #}
 
         $this->getResponse()
             #->setBody(json_encode($customers))
-            ->setBody(json_encode($this))
+            ->setBody(json_encode($customers))
             ->setHttpResponseCode(200)
             ->setHeader('Content-type', 'application/json', true);
 
