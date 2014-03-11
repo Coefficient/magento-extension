@@ -57,6 +57,15 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
         return true;
     }
 
+    public function testAction()
+    {
+        #$orderItem = Mage::getModel('sales/order_item')->load($orderItem->getId());
+        $collection = Mage::getModel('sales/order_item')->getCollection();
+        foreach ($collection as $item) {
+            print_r($item->getData());
+        }
+    }
+
     public function customersAction()
     {
         if (!$this->authorize()) {
@@ -73,33 +82,42 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
 
     public function ordersAction()
     {
-        if (!$this->authorize()) {
-            return $this;
+        #if (!$this->authorize()) {
+        #    return $this;
+        #}
+
+        #$properties = array(
+
+        $collection = Mage::getModel('sales/order')->getCollection()
+            ->addFieldToFilter('status', 'complete')
+            ->addAttributeToSelect('*');
+
+        $orders = array();
+
+        foreach ($collection as $order) {
+            $orders[] = array(
+                'order_id'    => $order->getId(),
+                'customer_id' => $order->getCustomerId(),
+                'store_id'    => $order->getStoreId(),
+                'base_discount_amount' => $order->getBaseDiscountAmount(),
+                'base_shipping_amount' => $order->getBaseShippingAmount(),
+                'base_shipping_tax_amount' => $order->getBaseShippingTaxAmount(),
+                'base_tax_amount'    => $order->getBaseTaxAmount(),
+                'base_grand_total'   => $order->getBaseGrandTotal(),
+                'base_currency_code' => $order->getBaseCurrencyCode(),
+                'total_item_count'   => $order->getTotalItemCount(),
+                'created_at'  => $order->getCreatedAt(),
+            );
         }
 
-        $this->orders = array();
-        $ordersCollection = Mage::getModel('sales/order')->getCollection()
-            ->addFieldToFilter('status', 'complete');
-
-        foreach ($ordersCollection as $order) {
-            if ($order && $order->getId()) {
-                $this->orders[] = Mage::getModel('coefficient/order')->parseOrder($order);
-            }
-        }
-
-        $this->getResponse()
-            ->setBody(json_encode($this))
-            ->setHeader('Content-type', 'application/json', true);
-
-        return $this;
-
+        $this->sendCsvResponse($orders);
     }
 
     public function orderItemsAction()
     {
         $collection = Mage::getModel('sales/order_item')->getCollection();
 
-        $this->orderItems = array();
+        $orderItems = array();
         
         foreach($collection as $orderItem) {
             if ($orderItem && $orderItem->getId()) {
@@ -152,3 +170,5 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
     }
 
 }
+
+?>
