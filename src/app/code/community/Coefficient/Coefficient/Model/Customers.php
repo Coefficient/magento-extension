@@ -2,6 +2,8 @@
 
 class Coefficient_Coefficient_Model_Customers
 {
+    public $customers = array();
+
     public function loadCustomers()
     {
         /* This might be inefficient but it's got to be better than loading
@@ -20,10 +22,7 @@ class Coefficient_Coefficient_Model_Customers
                ->joinAttribute('billing_region', 'customer_address/region', 'default_billing', null, 'left')
                ->joinAttribute('billing_country_code', 'customer_address/country_id', 'default_billing', null, 'left');
 
-        $this->customers = array();
-
         foreach ($collection as $customer) {
-            error_log($customer->getEmail());
             $data = $customer->getData();
             $this->customers[] = array(
                 'customer_id' => $customer->getId(),

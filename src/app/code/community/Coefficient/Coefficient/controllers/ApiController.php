@@ -60,37 +60,18 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
             return $this;
         }
 
-        #$customers = array(array('name' => 'Skyler', 'job' => 'Programmer'),
-        #                   array('name' => 'Obama', 'job' => 'President'),
-        #               );
-        #
-
-        #$order_detail = Mage::helper('coefficient')->getCustomerDetail("foo");
-
         $config = Mage::getConfig();
         $banana_url = $config->getNode('coefficient/banana_url');
 
-        $customers = Mage::getModel('coefficient/customers')->loadCustomers();
+        $customersModel = Mage::getModel('coefficient/customers')->loadCustomers();
 
-        #$customers = Mage::getModel('customer/customer')->getCollection();
-        #$this->customers = array();
-        #foreach ($customers as $customer) {
-        #    #error_log("customer id is " . $customer->getId());
-        #    $details = Mage::getModel('customer/customer')->load($customer->getId());
+        $this->sendCsvResponse($customersModel->customers);
 
-        #    if ($details->getAddressId()) {
-        #        $address = Mage::getModel('customer/address')->load($details->getAddressId());
-        #        error_log($address->getData('street'));
-        #    }
-
-        #    $this->customers[] = Mage::getModel('coefficient/customer')->parseCustomer($details);
-        #}
-
-        $this->getResponse()
-            #->setBody(json_encode($customers))
-            ->setBody(json_encode($customers))
-            ->setHttpResponseCode(200)
-            ->setHeader('Content-type', 'application/json', true);
+        #$this->getResponse()
+        #    #->setBody(json_encode($customers))
+        #    ->setBody(json_encode($customers))
+        #    ->setHttpResponseCode(200)
+        #    ->setHeader('Content-type', 'application/json', true);
 
         return $this;
     }
@@ -103,7 +84,8 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
             ->setHeader('Content-type', 'application/json', true);
     }
 
-    public function ordersAction() {
+    public function ordersAction()
+    {
         if (!$this->authorize()) {
             return $this;
         }
@@ -143,17 +125,24 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
         return $this;
     }
 
-    public function formatOrderItem($oi)
+    private function writeCsv(array $rows)
     {
-        $data = array();
-        
-
-        var_dump($data);
-        return $data;
+        if (!$rows) {
+            return;
+        }
+        $headers = array_keys($rows[0]);
+        $fh = fopen('php://output', 'w');
+        fputcsv($fh, $headers);
+        foreach ($rows as $row) {
+            fputcsv($fh, $row);
+        }
+        fclose($fh);
     }
 
-    public function indexAction() {
-        echo "Hello, Coefficient Index!";
+    private function sendCsvResponse($rows)
+    {
+        $this->getResponse()->setHeader('Content-type', 'text/csv');
+        $this->writeCsv($rows);
     }
 
 }
