@@ -95,7 +95,7 @@
                                 <config>
                                     <children>
                                         <coefficient>
-                                            <title>Store Hello World Module Section</title>
+                                            <title>Coefficient API Configuration</title>
                                         </coefficient>
                                     </children>
                                 </config>
