@@ -13,7 +13,7 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
 
         $this->getResponse()
             ->setHttpResponseCode(403)
-            ->setBody("Not authorized.");
+            ->setBody("Not isAuthorizedd.");
     }
 
     private function getRequestApiKey()
@@ -28,11 +28,11 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
         return null;
     }
 
-    private function authorize()
+    private function isAuthorized()
     {
         /*if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on') {
             $this->notAuthorized();
-            Mage::log("HTTPS isn't on.");
+            Mage::log("The request isn't using HTTPS");
             return false;
         }*/
 
@@ -42,37 +42,37 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
 
         if (!$apiKey) {
             $this->notAuthorized();
-            $helper->log("No API key in request authorization header.");
+            $helper->log("No API key in request authorization header");
             return false;
         }
         
         if ($apiKey != Mage::helper('coefficient')->getApiKey()) {
             $this->notAuthorized();
-            $helper->log("Incorrect API key.");
+            $helper->log("Incorrect API key");
             return false;
         }
         
         if (!Mage::getStoreConfig('coefficient/api/enabled')) {
             $this->notAuthorized();
-            $helper->log("API access isn't enabled.");
+            $helper->log("API access isn't enabled");
             return false;
         }
 
         return true;
     }
 
-    public function testAction()
-    {
-        #$orderItem = Mage::getModel('sales/order_item')->load($orderItem->getId());
-        $collection = Mage::getModel('sales/order_item')->getCollection();
-        foreach ($collection as $item) {
-            print_r($item->getData());
-        }
-    }
+    #public function testAction()
+    #{
+    #    #$orderItem = Mage::getModel('sales/order_item')->load($orderItem->getId());
+    #    $collection = Mage::getModel('sales/order_item')->getCollection();
+    #    foreach ($collection as $item) {
+    #        print_r($item->getData());
+    #    }
+    #}
 
     public function versionAction()
     {
-        if (!$this->authorize()) {
+        if (!$this->isAuthorized()) {
             return $this;
         }
         $version = Mage::helper('coefficient')->getExtensionVersion();
@@ -81,7 +81,7 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
 
     public function customersAction()
     {
-        #if (!$this->authorize()) {
+        #if (!$this->isAuthorized()) {
         #    return $this;
         #}
 
@@ -101,22 +101,20 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
         $customers = array();
 
         foreach ($collection as $customer) {
-            #$data = $customer->getData();
-            #print_r($data);
             $customers[] = array(
-                'customer_id' => $customer->getId(),
-                'created_at'  => $customer->getCreatedAt(),
+                'customerId' => $customer->getId(),
+                'createdAt'  => $customer->getCreatedAt(),
                 'email' => $customer->getEmail(),
                 'name'  => $customer->getName(),
                 'firstname' => $customer->getFirstname(),
                 'lastname'  => $customer->getLastname(),
                 'gender'    => $customer->getAttributeText('gender'),
                 'dob'       => $customer->getDob(),
-                'group_id'  => $customer->getGroupId(),
-                'billing_postcode' => $customer->getBillingPostCode(),
-                'billing_city'     => $customer->getBillingCity(),
-                'billing_region'   => $customer->getBillingRegion(),
-                'billing_country_code' => $customer->getBillingCountryCode(),
+                'groupId'  => $customer->getGroupId(),
+                'billingPostcode' => $customer->getBillingPostCode(),
+                'billingCity'     => $customer->getBillingCity(),
+                'billingRegion'   => $customer->getBillingRegion(),
+                'billingCountryCode' => $customer->getBillingCountryCode(),
             );
         }
 
@@ -125,7 +123,7 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
 
     public function ordersAction()
     {
-        #if (!$this->authorize()) {
+        #if (!$this->isAuthorized()) {
         #    return $this;
         #}
 
@@ -137,17 +135,17 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
 
         foreach ($collection as $order) {
             $orders[] = array(
-                'order_id'    => $order->getId(),
-                'customer_id' => $order->getCustomerId(),
-                'created_at'  => $order->getCreatedAt(),
-                'store_id'    => $order->getStoreId(),
-                'base_discount_amount' => $order->getBaseDiscountAmount(),
-                'base_shipping_amount' => $order->getBaseShippingAmount(),
-                'base_shipping_tax_amount' => $order->getBaseShippingTaxAmount(),
-                'base_tax_amount'    => $order->getBaseTaxAmount(),
-                'base_grand_total'   => $order->getBaseGrandTotal(),
-                'base_currency_code' => $order->getBaseCurrencyCode(),
-                'total_item_count'   => $order->getTotalItemCount(),
+                'orderId'    => $order->getId(),
+                'customerId' => $order->getCustomerId(),
+                'createdAt'  => $order->getCreatedAt(),
+                'storeId'    => $order->getStoreId(),
+                'baseDiscountAmount' => $order->getBaseDiscountAmount(),
+                'baseShippingAmount' => $order->getBaseShippingAmount(),
+                'baseShippingTaxAmount' => $order->getBaseShippingTaxAmount(),
+                'baseTaxAmount'    => $order->getBaseTaxAmount(),
+                'baseGrandTotal'   => $order->getBaseGrandTotal(),
+                'baseCurrencyCode' => $order->getBaseCurrencyCode(),
+                'totalItemCount'   => $order->getTotalItemCount(),
             );
         }
 
@@ -163,12 +161,12 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
         
         foreach ($collection as $item) {
             $items[] = array(
-                'order_item_id' => $item->getId(),
-                'order_id'      => $item->getOrderId(),
-                'created_at'    => $item->getCreatedAt(),
+                'orderItemId' => $item->getId(),
+                'orderId'      => $item->getOrderId(),
+                'createdAt'    => $item->getCreatedAt(),
                 'sku' => $item->getSku(),
-                'product_id' => $item->getProductId(),
-                'base_price' => $item->getBasePrice(),
+                'productId' => $item->getProductId(),
+                'basePrice' => $item->getBasePrice(),
             );
         }
 
