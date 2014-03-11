@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Provide an API for integration with Coefficient.
+ */
 class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_Action
 {
 
@@ -66,22 +69,6 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
         $customersModel = Mage::getModel('coefficient/customers')->loadCustomers();
 
         $this->sendCsvResponse($customersModel->customers);
-
-        #$this->getResponse()
-        #    #->setBody(json_encode($customers))
-        #    ->setBody(json_encode($customers))
-        #    ->setHttpResponseCode(200)
-        #    ->setHeader('Content-type', 'application/json', true);
-
-        return $this;
-    }
-
-    private function setJsonResponse()
-    {
-        $this->getResponse()
-            ->setBody(json_encode($this))
-            ->setHttpResponseCode(200)
-            ->setHeader('Content-type', 'application/json', true);
     }
 
     public function ordersAction()
@@ -125,6 +112,20 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
         return $this;
     }
 
+    /**
+     * Build the Response object for a JSON response.
+     */
+    private function setJsonResponse()
+    {
+        $this->getResponse()
+            ->setBody(json_encode($this))
+            ->setHttpResponseCode(200)
+            ->setHeader('Content-type', 'application/json', true);
+    }
+
+    /**
+     * Write CSV content directly to the output stream.
+     */
     private function writeCsv(array $rows)
     {
         if (!$rows) {
@@ -139,9 +140,14 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
         fclose($fh);
     }
 
+    /**
+     * Send a CSV response directly to the outut stream.
+     *
+     * This bypasses Magento's Response object.
+     */
     private function sendCsvResponse($rows)
     {
-        $this->getResponse()->setHeader('Content-type', 'text/csv');
+        header('Content-type: text/csv');
         $this->writeCsv($rows);
     }
 
