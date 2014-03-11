@@ -8,9 +8,11 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
 
     private function notAuthorized()
     {
-        error_log("sending HTTP 403");
-        Mage::helper('coefficient')->log("sending HTTP 403");
-        $this->getResponse()->setHttpResponseCode(403)
+        Mage::helper('coefficient')->log(
+            "{$_SERVER['REMOTE_ADDR']} not authorized: sending HTTP 403");
+
+        $this->getResponse()
+            ->setHttpResponseCode(403)
             ->setBody("Not authorized.");
     }
 
@@ -36,21 +38,23 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
 
         $apiKey = $this->getRequestApiKey();
 
+        $helper = Mage::helper('coefficient');
+
         if (!$apiKey) {
             $this->notAuthorized();
-            Mage::log("No API key in request authorization header.");
+            $helper->log("No API key in request authorization header.");
             return false;
         }
         
         if ($apiKey != Mage::helper('coefficient')->getApiKey()) {
             $this->notAuthorized();
-            Mage::log("API keys don't match.");
+            $helper->log("Incorrect API key.");
             return false;
         }
         
         if (!Mage::getStoreConfig('coefficient/api/enabled')) {
             $this->notAuthorized();
-            Mage::log("API access isn't enabled.");
+            $helper->log("API access isn't enabled.");
             return false;
         }
 
@@ -66,18 +70,57 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
         }
     }
 
-    public function customersAction()
+    public function versionAction()
     {
         if (!$this->authorize()) {
             return $this;
         }
+        $version = Mage::helper('coefficient')->getExtensionVersion();
+        $this->getResponse()->setBody($version);
+    }
 
-        $config = Mage::getConfig();
-        $banana_url = $config->getNode('coefficient/banana_url');
+    public function customersAction()
+    {
+        #if (!$this->authorize()) {
+        #    return $this;
+        #}
 
-        $customersModel = Mage::getModel('coefficient/customers')->loadCustomers();
+        $collection = Mage::getResourceModel('customer/customer_collection')
+               ->addNameToSelect()
+               ->addAttributeToSelect('*')
+               #->addAttributeToSelect('firstname')
+               #->addAttributeToSelect('lastname')
+               #->addAttributeToSelect('email')
+               #->addAttributeToSelect('created_at')
+               #->addAttributeToSelect('group_id')
+               ->joinAttribute('billing_postcode', 'customer_address/postcode', 'default_billing', null, 'left')
+               ->joinAttribute('billing_city', 'customer_address/city', 'default_billing', null, 'left')
+               ->joinAttribute('billing_region', 'customer_address/region', 'default_billing', null, 'left')
+               ->joinAttribute('billing_country_code', 'customer_address/country_id', 'default_billing', null, 'left');
 
-        $this->sendCsvResponse($customersModel->customers);
+        $customers = array();
+
+        foreach ($collection as $customer) {
+            #$data = $customer->getData();
+            #print_r($data);
+            $customers[] = array(
+                'customer_id' => $customer->getId(),
+                'created_at'  => $customer->getCreatedAt(),
+                'email' => $customer->getEmail(),
+                'name'  => $customer->getName(),
+                'firstname' => $customer->getFirstname(),
+                'lastname'  => $customer->getLastname(),
+                'gender'    => $customer->getAttributeText('gender'),
+                'dob'       => $customer->getDob(),
+                'group_id'  => $customer->getGroupId(),
+                'billing_postcode' => $customer->getBillingPostCode(),
+                'billing_city'     => $customer->getBillingCity(),
+                'billing_region'   => $customer->getBillingRegion(),
+                'billing_country_code' => $customer->getBillingCountryCode(),
+            );
+        }
+
+        $this->sendCsvResponse($customers);
     }
 
     public function ordersAction()
@@ -85,8 +128,6 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
         #if (!$this->authorize()) {
         #    return $this;
         #}
-
-        #$properties = array(
 
         $collection = Mage::getModel('sales/order')->getCollection()
             ->addFieldToFilter('status', 'complete')
@@ -98,6 +139,7 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
             $orders[] = array(
                 'order_id'    => $order->getId(),
                 'customer_id' => $order->getCustomerId(),
+                'created_at'  => $order->getCreatedAt(),
                 'store_id'    => $order->getStoreId(),
                 'base_discount_amount' => $order->getBaseDiscountAmount(),
                 'base_shipping_amount' => $order->getBaseShippingAmount(),
@@ -106,7 +148,6 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
                 'base_grand_total'   => $order->getBaseGrandTotal(),
                 'base_currency_code' => $order->getBaseCurrencyCode(),
                 'total_item_count'   => $order->getTotalItemCount(),
-                'created_at'  => $order->getCreatedAt(),
             );
         }
 
@@ -115,30 +156,23 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
 
     public function orderItemsAction()
     {
-        $collection = Mage::getModel('sales/order_item')->getCollection();
+        $collection = Mage::getModel('sales/order_item')->getCollection()
+            ->addAttributeToSelect('*');
 
-        $orderItems = array();
+        $items = array();
         
-        foreach($collection as $orderItem) {
-            if ($orderItem && $orderItem->getId()) {
-                $this->orderItems[] = Mage::getModel('coefficient/orderItem')->parseOrderItem($orderItem);
-            }
+        foreach ($collection as $item) {
+            $items[] = array(
+                'order_item_id' => $item->getId(),
+                'order_id'      => $item->getOrderId(),
+                'created_at'    => $item->getCreatedAt(),
+                'sku' => $item->getSku(),
+                'product_id' => $item->getProductId(),
+                'base_price' => $item->getBasePrice(),
+            );
         }
 
-        $this->setJsonResponse();
-
-        return $this;
-    }
-
-    /**
-     * Build the Response object for a JSON response.
-     */
-    private function setJsonResponse()
-    {
-        $this->getResponse()
-            ->setBody(json_encode($this))
-            ->setHttpResponseCode(200)
-            ->setHeader('Content-type', 'application/json', true);
+        $this->sendCsvResponse($items);
     }
 
     /**
@@ -168,7 +202,6 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
         header('Content-type: text/csv');
         $this->writeCsv($rows);
     }
-
 }
 
 ?>
