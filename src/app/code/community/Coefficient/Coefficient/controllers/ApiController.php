@@ -19,13 +19,13 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
     private function getRequestApiKey()
     {
         $auth_header = $this->getRequest()->getHeader('Authorization');
+        error_log("auth header is $auth_header");
 
         $matches = array();
         preg_match('/token apiKey="(.+)"/', $auth_header, $matches);
         if (isset($matches[1])) {
             return trim($matches[1]);
         }
-        return null;
     }
 
     private function isAuthorized()
@@ -95,7 +95,7 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
                 'firstname' => $customer->getFirstname(),
                 'lastname'  => $customer->getLastname(),
                 'gender'    => $customer->getAttributeText('gender'),
-                'dob'       => $customer->getDob(),
+                'dob'       => date('Y-m-d', strtotime($customer->getDob())),
                 'groupId'  => $customer->getGroupId(),
                 'billingPostcode' => $customer->getBillingPostCode(),
                 'billingCity'     => $customer->getBillingCity(),
