@@ -97,7 +97,7 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
                 'gender'    => $customer->getAttributeText('gender'),
                 'dob'       => date('Y-m-d', strtotime($customer->getDob())),
                 'groupId'  => $customer->getGroupId(),
-                'billingPostcode' => $customer->getBillingPostCode(),
+                'billingPostCode' => $customer->getBillingPostCode(),
                 'billingCity'     => $customer->getBillingCity(),
                 'billingRegion'   => $customer->getBillingRegion(),
                 'billingCountryCode' => $customer->getBillingCountryCode(),
