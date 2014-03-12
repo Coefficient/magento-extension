@@ -2,21 +2,13 @@
 
 <config>
     <modules>
-        <!-- Contains basic info about each Magento module. -->
-
         <Coefficient_Coefficient>
             <version>0.0.5</version>
-
         </Coefficient_Coefficient>
-
     </modules>
 
     <!-- Configure our module's behavior in the global scope. -->
     <global>
-        <coefficient>
-            <banana_url>http://coefficientinc.com/fruits/banana</banana_url>
-        </coefficient>
-        <!-- Defining models. -->
         <models>
             <coefficient>
                 <class>Coefficient_Coefficient_Model</class>
@@ -54,8 +46,6 @@
                     <frontName>coefficient</frontName>
                 </args>
 
-                
-
             </coefficient>
 
         </routers>
@@ -76,14 +66,11 @@
                     <modules>
                         <Coefficient_Coefficient_Adminhtml before="Mage_Adminhtml">Coefficient_Coefficient_Adminhtml</Coefficient_Coefficient_Adminhtml>
                     </modules>
-                    <!--<module>Coefficient_Adminhello</module>-->
-                    <!--<frontName>adminhellox</frontName>-->
                 </args>
             </adminhtml>
 
         </routers>
     </admin>
-
 
     <adminhtml>
         <acl>

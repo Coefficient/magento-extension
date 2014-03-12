@@ -7,7 +7,7 @@
     </tabs>
     <sections>
         <coefficient translate="label" module="coefficient">
-            <label>API Configuration</label>
+            <label>Coefficient Extension</label>
             <tab>coefficient_extension</tab>
             <frontend_type>text</frontend_type>
             <sort_order>1000</sort_order>
@@ -16,7 +16,9 @@
             <show_in_store>1</show_in_store>
             <groups>
                 <api translate="label">
-                    <label>Coefficient API Configuration</label>
+                    <expanded>1</expanded>
+                    <label>API Configuration</label>
+                    <comment>This extension provides an API that Coefficient uses to synchronize your customers, products, and sales.</comment>
                     <frontend_type>text</frontend_type>
                     <sort_order>1</sort_order>
                     <show_in_default>1</show_in_default>
@@ -36,24 +38,23 @@
                             <label>API Key</label>
                             <frontend_type>text</frontend_type>
                             <!--frontend_model>coefficient/adminhtml_disabledinput</frontend_model-->
-                            <!--comment>Save this in your Magento settings in Coefficient.</comment-->
+                            <comment>Save this in your Magento settings in Coefficient.</comment>
                             <backend_model>coefficient/adminhtml_apikey</backend_model>
                             <sort_order>3</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
-                            <show_in_store>0</show_in_store>
+                            <show_in_store>1</show_in_store>
                             <depends><enabled>1</enabled></depends>
                         </apikey>
-                        <banana translate="label">
-                            <label>Generate New API Key</label>
-                            <button_label>Hit Me</button_label>
+                        <generate_button translate="button_label">
+                            <button_label>Generate A New API Key</button_label>
                             <frontend_model>coefficient/adminhtml_generatebutton</frontend_model>
                             <sort_order>4</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                             <depends><enabled>1</enabled></depends>
-                        </banana>
+                        </generate_button>
                     </fields>
                 </api>
             </groups>

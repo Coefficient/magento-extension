@@ -26,12 +26,6 @@ class Coefficient_Coefficient_Helper_Data extends Mage_Core_Helper_Abstract
         return (string)Mage::getConfig()->getNode()->modules->Coefficient_Coefficient->version;
     }
 
-    public function getBananaUrl()
-    {
-        $config = Mage::getConfig();
-        $banana_url = $config->getNode('coefficient/banana_url');
-        return $banana_url;
-    }
 }
 
 ?>
