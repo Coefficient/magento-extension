@@ -13,7 +13,7 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
 
         $this->getResponse()
             ->setHttpResponseCode(403)
-            ->setBody("Not isAuthorizedd.");
+            ->setBody("Not authorized.");
     }
 
     private function getRequestApiKey()
