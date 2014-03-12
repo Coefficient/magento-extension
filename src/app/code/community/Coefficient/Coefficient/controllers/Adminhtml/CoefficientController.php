@@ -2,27 +2,20 @@
 
 class Coefficient_Coefficient_Adminhtml_CoefficientController extends Mage_Adminhtml_Controller_Action
 {
-    public function indexAction()
-    {
-        $this->_title = "Coefficient Banana yall";
 
-        $this->loadLayout()->renderLayout();
-        
-        return $this;
-    }
-
-    public function helloAction()
-    {
-        echo "Hello, World!";
-    }
-
-    public function apikeyAction()
+    public function generateApiKeyAction()
     {
         if ($this->getRequest()->isPost()) {
-            Mage::helper('coefficient')->generateApiKey();
-            $message = "Generated a new API key";
+            $helper = Mage::helper('coefficient');
+
+            $helper->generateApiKey();
+            $helper->log('user generated a new API key');
+
+            $message = 'Generated a new API key! Remember to update Coefficient with this new key.';
+
             Mage::getSingleton('adminhtml/session')->addSuccess($message);
         }
+        $this->_redirect('adminhtml/system_config/edit/section/coefficient');
     }
 
 }

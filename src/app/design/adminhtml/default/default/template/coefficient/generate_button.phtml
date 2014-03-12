@@ -1,3 +1,19 @@
-<button class="scalable" type="button" id="<?php echo $this->getHtmlId() ?>">
+<script type="text/javascript">
+    function postIt() {
+        var form = document.createElement("form");
+        form.setAttribute("method", "post");
+        form.setAttribute("action", "<?php echo $this->getPostUrl(); ?>");
+
+        var keyField = document.createElement("input");
+        keyField.setAttribute("type", "hidden");
+        keyField.setAttribute("name", "form_key");
+        keyField.setAttribute("value", "<?php echo $this->getFormKey(); ?>");
+        form.appendChild(keyField);
+
+        $(document.body).insert(form);
+        form.submit();
+    }
+</script>
+<button class="scalable" type="button" id="<?php echo $this->getHtmlId() ?>" onclick="javascript:postIt(); return false;">
     <span><?php echo $this->escapeHtml($this->getButtonLabel()) ?></span>
 </button>

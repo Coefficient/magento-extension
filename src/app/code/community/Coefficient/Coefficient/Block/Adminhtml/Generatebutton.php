@@ -21,9 +21,19 @@ class Coefficient_Coefficient_Block_Adminhtml_Generatebutton extends Mage_Adminh
     {
         $data = $element->getOriginalData();
         $this->addData(array('button_label' => $data['button_label'],
-                             'html_id' => $element->getHtmlId(),
-                             'url' => '#'));
+                             'html_id' => $element->getHtmlId()));
         return $this->_toHtml();
+    }
+
+    protected function getPostUrl()
+    {
+        return Mage::helper('adminhtml')->getUrl(
+            'coefficient/adminhtml_coefficient/generateApiKey');
+    }
+
+    protected function getFormKey()
+    {
+        return Mage::getSingleton('core/session')->getFormKey();
     }
 }
 
