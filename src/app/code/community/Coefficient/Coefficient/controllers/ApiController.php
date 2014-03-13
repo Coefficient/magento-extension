@@ -107,6 +107,36 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
         $this->sendCsvResponse($customers);
     }
 
+    public function productsAction()
+    {
+        if (!$this->isAuthorized()) {
+            return $this;
+        }
+        
+        $collection = Mage::getResourceModel('catalog/product_collection')
+            ->addAttributeToSelect('name')
+            ->addAttributeToSelect('sku')
+            ->addAttributeToSelect('price')
+            ->addAttributeToSelect('cost');
+
+        $products = array();
+
+        foreach ($collection as $product) {
+            $products[] = array(
+                'product_id' => $product->getId(),
+                'name' => $product->getName(),
+                'sku'  => $product->getSku(),
+                'created_at' => $product->getCreatedAt(),
+                'updated_at' => $product->getUpdatedAt(),
+                'price' => $product->getPrice(),
+                'cost'  => $product->getCost(),
+                'is_salable' => $product->getIsSalable(),
+            );
+        }
+
+        $this->sendCsvResponse($products);
+    }
+
     public function ordersAction()
     {
         if (!$this->isAuthorized()) {
