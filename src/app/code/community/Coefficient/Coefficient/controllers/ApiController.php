@@ -155,13 +155,14 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
                 'customerId' => $order->getCustomerId(),
                 'createdAt'  => $order->getCreatedAt(),
                 'storeId'    => $order->getStoreId(),
-                'baseDiscountAmount' => $order->getBaseDiscountAmount(),
-                'baseShippingAmount' => $order->getBaseShippingAmount(),
+                'totalItemCount' => $order->getTotalItemCount(),
+                'baseGrandTotal' => $order->getBaseGrandTotal(),
+                'baseSubtotalInclTax'   => $order->getBaseSubtotalInclTax(),
+                'baseDiscountAmount'    => $order->getBaseDiscountAmount(),
+                'baseShippingAmount'    => $order->getBaseShippingAmount(),
                 'baseShippingTaxAmount' => $order->getBaseShippingTaxAmount(),
                 'baseTaxAmount'    => $order->getBaseTaxAmount(),
-                'baseGrandTotal'   => $order->getBaseGrandTotal(),
                 'baseCurrencyCode' => $order->getBaseCurrencyCode(),
-                'totalItemCount'   => $order->getTotalItemCount(),
             );
         }
 
@@ -170,6 +171,10 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
 
     public function orderItemsAction()
     {
+        if (!$this->isAuthorized()) {
+            return $this;
+        }
+
         $collection = Mage::getModel('sales/order_item')->getCollection()
             ->addAttributeToSelect('*');
 
@@ -178,11 +183,13 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
         foreach ($collection as $item) {
             $items[] = array(
                 'orderItemId' => $item->getId(),
-                'orderId'      => $item->getOrderId(),
-                'createdAt'    => $item->getCreatedAt(),
-                'sku' => $item->getSku(),
-                'productId' => $item->getProductId(),
-                'basePrice' => $item->getBasePrice(),
+                'orderId'     => $item->getOrderId(),
+                'createdAt'   => $item->getCreatedAt(),
+                'productId'   => $item->getProductId(),
+                'qtyOrdered'  => $item->getQtyOrdered(),
+                'basePrice'   => $item->getBasePrice(),
+                'baseOriginalPrice' => $item->getBaseOriginalPrice(),
+                'basePriceInclTax'  => $item->getBasePriceInclTax(),
             );
         }
 
