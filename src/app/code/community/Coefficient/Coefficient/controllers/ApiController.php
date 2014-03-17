@@ -8,8 +8,7 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
 
     private function log($message)
     {
-        #Mage::log($message, null, 'coefficient.log');
-        error_log($message);
+        Mage::log($message, null, 'coefficient.log');
     }
 
     private function notAuthorized()
@@ -24,10 +23,10 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
     private function getRequestApiKey()
     {
         $auth_header = $this->getRequest()->getHeader('Authorization');
-        error_log("auth header is $auth_header");
 
         $matches = array();
         preg_match('/token apiKey="(.+)"/', $auth_header, $matches);
+
         if (isset($matches[1])) {
             return trim($matches[1]);
         }
@@ -77,9 +76,9 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
 
     public function customersAction()
     {
-        #if (!$this->isAuthorized()) {
-        #    return $this;
-        #}
+        if (!$this->isAuthorized()) {
+            return $this;
+        }
 
         $collection = Mage::getResourceModel('customer/customer_collection')
                ->addNameToSelect()
@@ -116,9 +115,9 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
 
     public function productsAction()
     {
-        #if (!$this->isAuthorized()) {
-        #    return $this;
-        #}
+        if (!$this->isAuthorized()) {
+            return $this;
+        }
         
         $collection = Mage::getResourceModel('catalog/product_collection')
             ->addAttributeToSelect('name')
@@ -148,9 +147,9 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
 
     public function ordersAction()
     {
-        #if (!$this->isAuthorized()) {
-        #    return $this;
-        #}
+        if (!$this->isAuthorized()) {
+            return $this;
+        }
 
         $collection = Mage::getModel('sales/order')->getCollection()
             ->addFieldToFilter('status', 'complete')
@@ -182,20 +181,24 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
 
     public function orderItemsAction()
     {
-        #if (!$this->isAuthorized()) {
-        #    return $this;
-        #}
+        if (!$this->isAuthorized()) {
+            return $this;
+        }
 
-        $collection = Mage::getModel('sales/order')
-            ->getCollection()
-            ->addAttributeToSelect('*')
-            ->addAttributeToFilter('status','Complete' );
+        $collection = Mage::getResourceModel('sales/order_item_collection')
+            ->addAttributeToSelect('*');
 
         $collection = $this->limit($collection);
 
         $items = array();
         
         foreach ($collection as $item) {
+            // FIXME: figure out how to do this in the collection load.
+            // http://magento.stackexchange.com/questions/16824/how-to-attach-order-status-to-order-item-collection
+            $orderItem = Mage::getModel('sales/order')->load($item->getId());
+            if ($orderItem->getStatus() != 'complete') {
+                continue;
+            }
             $items[] = array(
                 'orderItemId' => $item->getId(),
                 'orderId'     => $item->getOrderId(),
@@ -219,13 +222,8 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
         $pageNum = $this->getRequest()->getParam('pageNum');
         $pageSize = $this->getRequest()->getParam('pageSize', 500);
 
-        $this->log("pageNum: $pageNum pageSize: $pageSize"); 
-
         $collection->setCurPage($pageNum);
         $collection->setPageSize($pageSize);
-
-        $this->log("lastPageNumber is {$collection->getLastPageNumber()}");
-        #$this->log("actual pageNum is {$collection->getCurPage()}");
 
         if ($pageNum > $collection->getLastPageNumber()) {
             // Magento massages curPage to be <= the total number of available
@@ -244,14 +242,11 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
     private function sendCsvResponse($rows)
     {
         $response = $this->getResponse();
-        #$response->setHeader('Content-type', 'text/csv', true);
-        $debug = (bool)$rows;
-        error_log("rows are: $debug");
+        $response->setHeader('Content-type', 'text/csv', true);
 
         if ($rows) {
             $this->writeCsv($rows);
         } else {
-            $this->log("sending no content");
             $response->setHttpResponseCode(204)->setBody('No Content');
         }
     }
