@@ -16,11 +16,6 @@ class Coefficient_Coefficient_Helper_Data extends Mage_Core_Helper_Abstract
         return $apiKey;
     }
 
-    public function log($message)
-    {
-        Mage::log($message, null, 'coefficient.log');
-    }
-
     public function getExtensionVersion()
     {
         return (string)Mage::getConfig()->getNode()->modules->Coefficient_Coefficient->version;

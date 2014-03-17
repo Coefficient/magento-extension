@@ -6,14 +6,19 @@
 class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_Action
 {
 
+    private function log($message)
+    {
+        #Mage::log($message, null, 'coefficient.log');
+        error_log($message);
+    }
+
     private function notAuthorized()
     {
-        Mage::helper('coefficient')->log(
-            "{$_SERVER['REMOTE_ADDR']} not authorized: sending HTTP 403");
+        $this->log("{$_SERVER['REMOTE_ADDR']} not authorized: sending HTTP 403");
 
         $this->getResponse()
             ->setHttpResponseCode(403)
-            ->setBody("Not authorized.");
+            ->setBody('Not Authorized');
     }
 
     private function getRequestApiKey()
@@ -72,9 +77,9 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
 
     public function customersAction()
     {
-        if (!$this->isAuthorized()) {
-            return $this;
-        }
+        #if (!$this->isAuthorized()) {
+        #    return $this;
+        #}
 
         $collection = Mage::getResourceModel('customer/customer_collection')
                ->addNameToSelect()
@@ -83,6 +88,8 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
                ->joinAttribute('billing_city', 'customer_address/city', 'default_billing', null, 'left')
                ->joinAttribute('billing_region', 'customer_address/region', 'default_billing', null, 'left')
                ->joinAttribute('billing_country_code', 'customer_address/country_id', 'default_billing', null, 'left');
+
+        $collection = $this->limit($collection);
 
         $customers = array();
 
@@ -109,15 +116,17 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
 
     public function productsAction()
     {
-        if (!$this->isAuthorized()) {
-            return $this;
-        }
+        #if (!$this->isAuthorized()) {
+        #    return $this;
+        #}
         
         $collection = Mage::getResourceModel('catalog/product_collection')
             ->addAttributeToSelect('name')
             ->addAttributeToSelect('sku')
             ->addAttributeToSelect('price')
             ->addAttributeToSelect('cost');
+
+        $collection = $this->limit($collection);
 
         $products = array();
 
@@ -139,13 +148,15 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
 
     public function ordersAction()
     {
-        if (!$this->isAuthorized()) {
-            return $this;
-        }
+        #if (!$this->isAuthorized()) {
+        #    return $this;
+        #}
 
         $collection = Mage::getModel('sales/order')->getCollection()
             ->addFieldToFilter('status', 'complete')
             ->addAttributeToSelect('*');
+
+        $collection = $this->limit($collection);
 
         $orders = array();
 
@@ -171,12 +182,16 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
 
     public function orderItemsAction()
     {
-        if (!$this->isAuthorized()) {
-            return $this;
-        }
+        #if (!$this->isAuthorized()) {
+        #    return $this;
+        #}
 
-        $collection = Mage::getModel('sales/order_item')->getCollection()
-            ->addAttributeToSelect('*');
+        $collection = Mage::getModel('sales/order')
+            ->getCollection()
+            ->addAttributeToSelect('*')
+            ->addAttributeToFilter('status','Complete' );
+
+        $collection = $this->limit($collection);
 
         $items = array();
         
@@ -197,6 +212,51 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
     }
 
     /**
+     * Apply a limit to the collection.
+     */
+    private function limit($collection)
+    {
+        $pageNum = $this->getRequest()->getParam('pageNum');
+        $pageSize = $this->getRequest()->getParam('pageSize', 500);
+
+        $this->log("pageNum: $pageNum pageSize: $pageSize"); 
+
+        $collection->setCurPage($pageNum);
+        $collection->setPageSize($pageSize);
+
+        $this->log("lastPageNumber is {$collection->getLastPageNumber()}");
+        #$this->log("actual pageNum is {$collection->getCurPage()}");
+
+        if ($pageNum > $collection->getLastPageNumber()) {
+            // Magento massages curPage to be <= the total number of available
+            // pages, so return an empty array if we've actually exceeded this.
+            return array();
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Send a CSV response directly to the outut stream.
+     *
+     * Writing CSV content bypasses Magento's Response object.
+     */
+    private function sendCsvResponse($rows)
+    {
+        $response = $this->getResponse();
+        #$response->setHeader('Content-type', 'text/csv', true);
+        $debug = (bool)$rows;
+        error_log("rows are: $debug");
+
+        if ($rows) {
+            $this->writeCsv($rows);
+        } else {
+            $this->log("sending no content");
+            $response->setHttpResponseCode(204)->setBody('No Content');
+        }
+    }
+
+    /**
      * Write CSV content directly to the output stream.
      */
     private function writeCsv(array $rows)
@@ -211,17 +271,6 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
             fputcsv($fh, $row);
         }
         fclose($fh);
-    }
-
-    /**
-     * Send a CSV response directly to the outut stream.
-     *
-     * This bypasses Magento's Response object.
-     */
-    private function sendCsvResponse($rows)
-    {
-        header('Content-type: text/csv');
-        $this->writeCsv($rows);
     }
 }
 
