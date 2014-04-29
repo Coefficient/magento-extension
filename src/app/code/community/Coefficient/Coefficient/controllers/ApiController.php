@@ -100,8 +100,13 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
                 'name'  => $customer->getName(),
                 'firstname' => $customer->getFirstname(),
                 'lastname'  => $customer->getLastname(),
-                'gender'    => $customer->getAttributeText('gender'),
-                'dob'       => date('Y-m-d', strtotime($customer->getDob())),
+                //'gender'    => $customer->getAttributeText('gender'),
+                /* TODO: evalulate how efficient this is. 
+                 I'm not sure if this is the best way to load the customer's
+                 gender text (note: getAttributeText('gender') returns nothing.
+                 I suspect I need to add an additional attribute to the join. */
+                'gender'   => $customer->getAttribute('gender')->getSource()->getOptionText($customer->getGender()),
+                'dob'      => date('Y-m-d', strtotime($customer->getDob())),
                 'groupId'  => $customer->getGroupId(),
                 'billingPostCode' => $customer->getBillingPostCode(),
                 'billingCity'     => $customer->getBillingCity(),
