@@ -92,10 +92,12 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
 
         $customers = array();
 
+        $helper = Mage::helper('coefficient');
+
         foreach ($collection as $customer) {
             $customers[] = array(
                 'customerId' => $customer->getId(),
-                'createdAt'  => $customer->getCreatedAt(),
+                'createdAt'  => $helper->utcDate($customer->getCreatedAt()),
                 'email' => $customer->getEmail(),
                 'name'  => $customer->getName(),
                 'firstname' => $customer->getFirstname(),
@@ -134,13 +136,15 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
 
         $products = array();
 
+        $helper = Mage::helper('coefficient');
+
         foreach ($collection as $product) {
             $products[] = array(
                 'product_id' => $product->getId(),
                 'name' => $product->getName(),
                 'sku'  => $product->getSku(),
-                'created_at' => $product->getCreatedAt(),
-                'updated_at' => $product->getUpdatedAt(),
+                'created_at' => $helper->utcDate($product->getCreatedAt()),
+                'updated_at' => $helper->utcDate($product->getUpdatedAt()),
                 'price' => $product->getPrice(),
                 'cost'  => $product->getCost(),
                 'is_salable' => $product->getIsSalable(),
@@ -164,11 +168,13 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
 
         $orders = array();
 
+        $helper = Mage::helper('coefficient');
+
         foreach ($collection as $order) {
             $orders[] = array(
                 'orderId'    => $order->getId(),
                 'customerId' => $order->getCustomerId(),
-                'createdAt'  => $order->getCreatedAt(),
+                'createdAt'  => $helper->utcDate($order->getCreatedAt()),
                 'storeId'    => $order->getStoreId(),
                 'totalItemCount' => $order->getTotalItemCount(),
                 'baseGrandTotal' => $order->getBaseGrandTotal(),
@@ -196,6 +202,8 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
         $collection = $this->limit($collection);
 
         $items = array();
+
+        $helper = Mage::helper('coefficient');
         
         foreach ($collection as $item) {
             // FIXME: figure out how to do this in the collection load.
@@ -207,7 +215,7 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
             $items[] = array(
                 'orderItemId' => $item->getId(),
                 'orderId'     => $item->getOrderId(),
-                'createdAt'   => $item->getCreatedAt(),
+                'createdAt'   => $helper->utcDate($item->getCreatedAt()),
                 'productId'   => $item->getProductId(),
                 'qtyOrdered'  => $item->getQtyOrdered(),
                 'basePrice'   => $item->getBasePrice(),

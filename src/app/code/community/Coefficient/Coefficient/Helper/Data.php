@@ -21,6 +21,17 @@ class Coefficient_Coefficient_Helper_Data extends Mage_Core_Helper_Abstract
         return (string)Mage::getConfig()->getNode()->modules->Coefficient_Coefficient->version;
     }
 
+    /**
+     * Convert timestamps to ISO 8601 format.
+     *
+     * Timestamps are stored as UTC but when accessed through Magento they
+     * do not include any offset information.
+     */
+    public function utcDate($dateString)
+    {
+        $date = new DateTime($dateString, new DateTimeZone('UTC'));
+        return $date->format('c');
+    }
 }
 
 ?>
