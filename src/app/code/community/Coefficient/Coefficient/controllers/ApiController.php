@@ -200,7 +200,7 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
         foreach ($collection as $item) {
             // FIXME: figure out how to do this in the collection load.
             // http://magento.stackexchange.com/questions/16824/how-to-attach-order-status-to-order-item-collection
-            $orderItem = Mage::getModel('sales/order')->load($item->getId());
+            $orderItem = Mage::getModel('sales/order')->load($item->getOrderId());
             if ($orderItem->getStatus() != 'complete') {
                 continue;
             }
