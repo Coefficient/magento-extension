@@ -44,11 +44,8 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
             Mage::log("The request isn't using HTTPS");
             return false;
         }*/
-        return true;
 
         $apiKey = $this->getRequestApiKey();
-
-        $helper = Mage::helper('coefficient');
 
         if (!$apiKey) {
             $this->notAuthorized();
@@ -56,7 +53,7 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
             return false;
         }
         
-        if ($apiKey != Mage::helper('coefficient')->getApiKey()) {
+        if ($apiKey != $this->helper()->getApiKey()) {
             $this->notAuthorized();
             $helper->log("Incorrect API key");
             return false;
@@ -76,7 +73,7 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
         if (!$this->isAuthorized()) {
             return $this;
         }
-        $version = Mage::helper('coefficient')->getExtensionVersion();
+        $version = $this->helper()->getExtensionVersion();
         $this->getResponse()->setBody($version);
     }
 
@@ -94,16 +91,14 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
                ->joinAttribute('billing_region', 'customer_address/region', 'default_billing', null, 'left')
                ->joinAttribute('billing_country_code', 'customer_address/country_id', 'default_billing', null, 'left');
 
-        $collection = $this->limit($collection);
+        $collection = $this->filter($collection);
 
         $customers = array();
-
-        $helper = Mage::helper('coefficient');
 
         foreach ($collection as $customer) {
             $customers[] = array(
                 'customerId' => $customer->getId(),
-                'createdAt'  => $helper->fromIsoDate($customer->getCreatedAt()),
+                'createdAt'  => $this->helper()->fromIsoDate($customer->getCreatedAt()),
                 'email' => $customer->getEmail(),
                 'name'  => $customer->getName(),
                 'firstname' => $customer->getFirstname(),
@@ -138,21 +133,17 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
             ->addAttributeToSelect('price')
             ->addAttributeToSelect('cost');
 
-        $this->applyFilters($collection);
-
-        $collection = $this->limit($collection);
+        $collection = $this->filter($collection);
 
         $products = array();
-
-        $helper = Mage::helper('coefficient');
 
         foreach ($collection as $product) {
             $products[] = array(
                 'product_id' => $product->getId(),
                 'name' => $product->getName(),
                 'sku'  => $product->getSku(),
-                'created_at' => $helper->fromIsoDate($product->getCreatedAt()),
-                'updated_at' => $helper->fromIsoDate($product->getUpdatedAt()),
+                'created_at' => $this->helper()->fromIsoDate($product->getCreatedAt()),
+                'updated_at' => $this->helper()->fromIsoDate($product->getUpdatedAt()),
                 'price' => $product->getPrice(),
                 'cost'  => $product->getCost(),
                 'is_salable' => $product->getIsSalable(),
@@ -172,17 +163,15 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
             ->addFieldToFilter('status', 'complete')
             ->addAttributeToSelect('*');
 
-        $collection = $this->limit($collection);
+        $collection = $this->filter($collection);
 
         $orders = array();
-
-        $helper = Mage::helper('coefficient');
 
         foreach ($collection as $order) {
             $orders[] = array(
                 'orderId'    => $order->getId(),
                 'customerId' => $order->getCustomerId(),
-                'createdAt'  => $helper->fromIsoDate($order->getCreatedAt()),
+                'createdAt'  => $this->helper()->fromIsoDate($order->getCreatedAt()),
                 'storeId'    => $order->getStoreId(),
                 'totalItemCount' => $order->getTotalItemCount(),
                 'baseGrandTotal' => $order->getBaseGrandTotal(),
@@ -207,12 +196,10 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
         $collection = Mage::getResourceModel('sales/order_item_collection')
             ->addAttributeToSelect('*');
 
-        $collection = $this->limit($collection);
+        $collection = $this->filter($collection);
 
         $items = array();
 
-        $helper = Mage::helper('coefficient');
-        
         foreach ($collection as $item) {
             // FIXME: figure out how to do this in the collection load.
             // http://magento.stackexchange.com/questions/16824/how-to-attach-order-status-to-order-item-collection
@@ -223,7 +210,7 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
             $items[] = array(
                 'orderItemId' => $item->getId(),
                 'orderId'     => $item->getOrderId(),
-                'createdAt'   => $helper->fromIsoDate($item->getCreatedAt()),
+                'createdAt'   => $this->helper()->fromIsoDate($item->getCreatedAt()),
                 'productId'   => $item->getProductId(),
                 'qtyOrdered'  => $item->getQtyOrdered(),
                 'basePrice'   => $item->getBasePrice(),
@@ -236,26 +223,19 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
     }
 
     /**
-     * Apply a filter to the collection.
+     * Apply any filters to the collection.
+     *
+     * Also applies a limit and offset if pageNum or pageSize are present in the request.
      */
-    private function applyFilters($collection)
+    private function filter($collection)
     {
         $since = $this->getRequest()->getParam('since');
         if ($since) {
             $date = $this->helper()->fromIsoDate($since);
             $collection->addFieldToFilter('updated_at', array('gteq' => $date));
         }
-    }
-
-    /**
-     * Limit the collection.
-     *
-     * This returns the modified collection. If $pageNum is out of bounds
-     * an empty array is returned.
-     */
-    private function limit($collection)
-    {
-        $pageNum = $this->getRequest()->getParam('pageNum');
+    
+        $pageNum = $this->getRequest()->getParam('pageNum', 1);
         $pageSize = $this->getRequest()->getParam('pageSize', 500);
 
         $collection->setCurPage($pageNum);
@@ -278,7 +258,7 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
     private function sendCsvResponse($rows)
     {
         $response = $this->getResponse();
-        #$response->setHeader('Content-type', 'text/csv', true);
+        $response->setHeader('Content-type', 'text/csv', true);
 
         if ($rows) {
             $this->writeCsv($rows);
