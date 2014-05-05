@@ -11,6 +11,11 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
         Mage::log($message, null, 'coefficient.log');
     }
 
+    private function helper()
+    {
+        return Mage::helper('coefficient');
+    }
+
     private function notAuthorized()
     {
         $this->log("{$_SERVER['REMOTE_ADDR']} not authorized: sending HTTP 403");
@@ -39,6 +44,7 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
             Mage::log("The request isn't using HTTPS");
             return false;
         }*/
+        return true;
 
         $apiKey = $this->getRequestApiKey();
 
@@ -97,7 +103,7 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
         foreach ($collection as $customer) {
             $customers[] = array(
                 'customerId' => $customer->getId(),
-                'createdAt'  => $helper->utcDate($customer->getCreatedAt()),
+                'createdAt'  => $helper->fromIsoDate($customer->getCreatedAt()),
                 'email' => $customer->getEmail(),
                 'name'  => $customer->getName(),
                 'firstname' => $customer->getFirstname(),
@@ -132,6 +138,8 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
             ->addAttributeToSelect('price')
             ->addAttributeToSelect('cost');
 
+        $this->applyFilters($collection);
+
         $collection = $this->limit($collection);
 
         $products = array();
@@ -143,8 +151,8 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
                 'product_id' => $product->getId(),
                 'name' => $product->getName(),
                 'sku'  => $product->getSku(),
-                'created_at' => $helper->utcDate($product->getCreatedAt()),
-                'updated_at' => $helper->utcDate($product->getUpdatedAt()),
+                'created_at' => $helper->fromIsoDate($product->getCreatedAt()),
+                'updated_at' => $helper->fromIsoDate($product->getUpdatedAt()),
                 'price' => $product->getPrice(),
                 'cost'  => $product->getCost(),
                 'is_salable' => $product->getIsSalable(),
@@ -174,7 +182,7 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
             $orders[] = array(
                 'orderId'    => $order->getId(),
                 'customerId' => $order->getCustomerId(),
-                'createdAt'  => $helper->utcDate($order->getCreatedAt()),
+                'createdAt'  => $helper->fromIsoDate($order->getCreatedAt()),
                 'storeId'    => $order->getStoreId(),
                 'totalItemCount' => $order->getTotalItemCount(),
                 'baseGrandTotal' => $order->getBaseGrandTotal(),
@@ -215,7 +223,7 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
             $items[] = array(
                 'orderItemId' => $item->getId(),
                 'orderId'     => $item->getOrderId(),
-                'createdAt'   => $helper->utcDate($item->getCreatedAt()),
+                'createdAt'   => $helper->fromIsoDate($item->getCreatedAt()),
                 'productId'   => $item->getProductId(),
                 'qtyOrdered'  => $item->getQtyOrdered(),
                 'basePrice'   => $item->getBasePrice(),
@@ -228,7 +236,22 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
     }
 
     /**
-     * Apply a limit to the collection.
+     * Apply a filter to the collection.
+     */
+    private function applyFilters($collection)
+    {
+        $since = $this->getRequest()->getParam('since');
+        if ($since) {
+            $date = $this->helper()->fromIsoDate($since);
+            $collection->addFieldToFilter('updated_at', array('gteq' => $date));
+        }
+    }
+
+    /**
+     * Limit the collection.
+     *
+     * This returns the modified collection. If $pageNum is out of bounds
+     * an empty array is returned.
      */
     private function limit($collection)
     {
@@ -255,7 +278,7 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
     private function sendCsvResponse($rows)
     {
         $response = $this->getResponse();
-        $response->setHeader('Content-type', 'text/csv', true);
+        #$response->setHeader('Content-type', 'text/csv', true);
 
         if ($rows) {
             $this->writeCsv($rows);
