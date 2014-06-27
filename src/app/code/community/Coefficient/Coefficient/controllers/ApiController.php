@@ -1,4 +1,11 @@
 <?php
+/**
+ * Copyright (c) 2014 Coefficient, Inc.
+ *
+ * This file is part of the Coefficient extension for Magento and is released
+ * under the MIT License. For full copyright and license information, please
+ * see the LICENSE file.
+ */
 
 /**
  * Provide an API for integration with Coefficient.
@@ -39,11 +46,11 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
 
     private function isAuthorized()
     {
-        /*if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on') {
+        if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on') {
             $this->notAuthorized();
-            Mage::log("The request isn't using HTTPS");
+            $helper->log("The request isn't using HTTPS");
             return false;
-        }*/
+        }
 
         $apiKey = $this->getRequestApiKey();
 
@@ -99,6 +106,7 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
             $customers[] = array(
                 'customerId' => $customer->getId(),
                 'createdAt'  => $this->helper()->fromIsoDate($customer->getCreatedAt()),
+                'updatedAt'  => $this->helper()->fromIsoDate($customer->getUpdatedAt()),
                 'email' => $customer->getEmail(),
                 'name'  => $customer->getName(),
                 'firstname' => $customer->getFirstname(),
