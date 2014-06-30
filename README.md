@@ -10,7 +10,8 @@ store's customers, products, and orders.
 
 Installation
 ------------
-No installation instructions yet.
+[This](http://gotgroove.com/ecommerce-blog/magento-development/developer-toolbox-a-guide-for-installing-magento-extensions/)
+is a good installation guide written by someone else.
 
 Local Development
 -----------------
