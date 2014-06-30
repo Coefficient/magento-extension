@@ -48,7 +48,7 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
     {
         if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on') {
             $this->notAuthorized();
-            $helper->log("The request isn't using HTTPS");
+            $this->log("The request isn't using HTTPS");
             return false;
         }
 
@@ -56,19 +56,19 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
 
         if (!$apiKey) {
             $this->notAuthorized();
-            $helper->log("No API key in request authorization header");
+            $this->log("No API key in request authorization header");
             return false;
         }
         
         if ($apiKey != $this->helper()->getApiKey()) {
             $this->notAuthorized();
-            $helper->log("Incorrect API key");
+            $this->log("Incorrect API key");
             return false;
         }
         
         if (!Mage::getStoreConfig('coefficient/api/enabled')) {
             $this->notAuthorized();
-            $helper->log("API access isn't enabled");
+            $this->log("API access isn't enabled");
             return false;
         }
 
