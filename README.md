@@ -1,8 +1,19 @@
-Coefficient Magento extension
-=============================
+Coefficient extension for Magento
+=================================
 
-Local development
-----------------
+Coefficient helps you understand your customers and grow your business. We are 
+automated customer research for direct-to-consumer brands. Find out more at
+[coefficientapp.com](http://coefficientapp.com).
+
+This extension exposes a simple REST API that Coefficient uses to download your
+store's customers, products, and orders.
+
+Installation
+------------
+No installation instructions yet.
+
+Local Development
+-----------------
 
 You need a local install of Magento somewhere, for example `/opt/sites/magento`.
 Download the free Community Edition [here](http://www.magentocommerce.com/download).
@@ -22,10 +33,10 @@ directly.  Move it somewhere like `/usr/local/bin` and make it executable.
 
 *Note: For some reason I couldn't get Modman to work unless I was root. I double
 checked my permissions, and the directories of my Magento install are writable by
-my user (vagrant) but for whatever reason, I could only get Modman to work as root.
-You may be able to get it to work as your user, but I spent a while troubleshooting
+my user but for whatever reason, I could only get Modman to work with elevated privileges.
+You may be able to get it to work as your user but I spent a while troubleshooting
 this and was never able to figure it out. So if you run `modman` as your regular
-user and it doesn't work, save ourself some time and headache and just run it as root.*
+user and it doesn't work, save yourself some time and headache and just run it as root.*
 
 `cd` to the root of your local Magento install. If you haven't before, run `modman init`
 which will create a `.modman` directory.
