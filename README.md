@@ -8,6 +8,11 @@ automated customer research for direct-to-consumer brands. Find out more at
 This extension exposes a simple REST API that Coefficient uses to download your
 store's customers, products, and orders.
 
+Once installed, this extension exposes an API key in **System -> Configuration ->
+Coefficient -> Coefficient Extension**. You'll need to copy this key into the API
+integrations section in Coefficient. Note that your store must support HTTPS.
+This extension will not work over HTTP.
+
 Installation
 ------------
 [This](http://gotgroove.com/ecommerce-blog/magento-development/developer-toolbox-a-guide-for-installing-magento-extensions/)
