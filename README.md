@@ -2,21 +2,28 @@ Coefficient extension for Magento
 =================================
 
 Coefficient helps you understand your customers and grow your business. We are 
-automated customer research for direct-to-consumer brands. Find out more at
-[coefficientapp.com](http://coefficientapp.com).
+automated customer research for direct-to-consumer brands.
 
 This extension exposes a simple REST API that Coefficient uses to download your
 store's customers, products, and orders.
+
+Coefficient is currently in private beta. This extension supports Magento
+versions 1.8.1 and newer. It may work in older versions of Magento but this has
+not been tested. It was developed in PHP 5.3 and may work with older versions of
+PHP but this too has not been tested.
+
+Find out more about Coefficient and request a demo at [coefficientapp.com](https://coefficientapp.com).
+
+Installation
+------------
+
+[This](http://gotgroove.com/ecommerce-blog/magento-development/developer-toolbox-a-guide-for-installing-magento-extensions/)
+is a good installation guide written by someone else.
 
 Once installed, this extension exposes an API key in **System -> Configuration ->
 Coefficient -> Coefficient Extension**. You'll need to copy this key into the API
 integrations section in Coefficient. Note that your store must support HTTPS.
 This extension will not work over HTTP.
-
-Installation
-------------
-[This](http://gotgroove.com/ecommerce-blog/magento-development/developer-toolbox-a-guide-for-installing-magento-extensions/)
-is a good installation guide written by someone else.
 
 Local Development
 -----------------
