@@ -8,5 +8,6 @@
  */
 /* @var $this Mage_Core_Model_Resource_Setup */
 $key = Mage::helper('coefficient')->generateApiKey();
-error_log("setup generated api key $key");
+$key = Mage::helper('coefficient')->generateSecret();
+error_log("setup generated api key $key and secret");
 Mage::app()->getCacheInstance()->invalidateType('config');

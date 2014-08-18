@@ -46,7 +46,7 @@ see the LICENSE file.
                             <label>API Key</label>
                             <frontend_type>text</frontend_type>
                             <!--frontend_model>coefficient/adminhtml_disabledinput</frontend_model-->
-                            <comment>Save this in your Magento settings in Coefficient.</comment>
+                            <comment>This is used to identify requests from Coefficient.</comment>
                             <backend_model>coefficient/adminhtml_apikey</backend_model>
                             <sort_order>3</sort_order>
                             <show_in_default>1</show_in_default>
@@ -54,10 +54,24 @@ see the LICENSE file.
                             <show_in_store>1</show_in_store>
                             <depends><enabled>1</enabled></depends>
                         </apikey>
-                        <generate_button translate="button_label">
-                            <button_label>Generate A New API Key</button_label>
-                            <frontend_model>coefficient/adminhtml_generatebutton</frontend_model>
+                        <secret translate="label">
+                            <label>Secret</label>
+                            <frontend_type>text</frontend_type>
+                            <!--frontend_model>coefficient/adminhtml_disabledinput</frontend_model-->
+                            <comment>This is used to authenticate requests from Coefficient.
+                                Treat this like a password and never share it with anyone.</comment>
+                            <backend_model>coefficient/adminhtml_secret</backend_model>
                             <sort_order>4</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <depends><enabled>1</enabled></depends>
+                        </secret>
+
+                        <generate_button translate="button_label">
+                            <button_label>Generate A New Secret</button_label>
+                            <frontend_model>coefficient/adminhtml_generatebutton</frontend_model>
+                            <sort_order>5</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>

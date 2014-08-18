@@ -35,7 +35,7 @@ class Coefficient_Coefficient_Block_Adminhtml_Generatebutton extends Mage_Adminh
     protected function getPostUrl()
     {
         return Mage::helper('adminhtml')->getUrl(
-            'coefficient/adminhtml_coefficient/generateApiKey');
+            'coefficient/adminhtml_coefficient/generateSecret');
     }
 
     protected function getFormKey()

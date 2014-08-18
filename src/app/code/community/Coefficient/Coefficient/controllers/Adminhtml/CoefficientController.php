@@ -10,15 +10,14 @@
 class Coefficient_Coefficient_Adminhtml_CoefficientController extends Mage_Adminhtml_Controller_Action
 {
 
-    public function generateApiKeyAction()
+    public function generateSecretAction()
     {
         if ($this->getRequest()->isPost()) {
             $helper = Mage::helper('coefficient');
 
-            $helper->generateApiKey();
-            $helper->log('user generated a new API key');
+            $helper->generateSecret();
 
-            $message = 'Generated a new API key! Remember to update Coefficient with this new key.';
+            $message = 'Generated a new secret! Remember to update Coefficient with this new value.';
 
             Mage::getSingleton('adminhtml/session')->addSuccess($message);
         }

@@ -12,6 +12,7 @@
  */
 class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_Action
 {
+    const DIGEST_REALM = 'Private';
 
     private function log($message)
     {
@@ -23,56 +24,75 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
         return Mage::helper('coefficient');
     }
 
-    private function notAuthorized()
+    /**
+     * Authenticate the request using Digest auth.
+     *
+     * Taken from http://php.net/manual/en/features.http-auth.php
+     */
+    private function authenticate()
     {
-        $this->log("{$_SERVER['REMOTE_ADDR']} not authorized: sending HTTP 403");
+        # We send Digest headers directly.
+        if (empty($_SERVER['PHP_AUTH_DIGEST'])) {
+            header('HTTP/1.1 401 Unauthorized');
+            header('WWW-Authenticate: Digest realm="'.self::DIGEST_REALM.
+                   '",qop="auth",nonce="'.uniqid().'",opaque="'.md5(self::DIGEST_REALM).'"');
 
-        $this->getResponse()
-            ->setHttpResponseCode(403)
-            ->setBody('Not Authorized');
-    }
+            die('Not authenticated');
+        }
 
-    private function getRequestApiKey()
-    {
-        $auth_header = $this->getRequest()->getHeader('Authorization');
+        $data = $this->httpDigestParse($_SERVER['PHP_AUTH_DIGEST']);
+        if (!$data) {
+            return false;
+        }
 
-        $matches = array();
-        preg_match('/token apiKey="(.+)"/', $auth_header, $matches);
+        $secret = $this->helper()->getSecret();
 
-        if (isset($matches[1])) {
-            return trim($matches[1]);
+        // generate the valid response
+        $A1 = md5($data['username'] . ':' . self::DIGEST_REALM . ':' . $secret);
+        $A2 = md5($_SERVER['REQUEST_METHOD'].':'.$data['uri']);
+        $valid_response = md5($A1.':'.$data['nonce'].':'.$data['nc'].':'.$data['cnonce'].':'.$data['qop'].':'.$A2);
+
+        if ($valid_response != $data['response']) {
+            $this->log("{$_SERVER['REMOTE_ADDR']} did not generate a valid signature: sending HTTP 401");
+            return false;
+        } else {
+            return $data['username'];
         }
     }
 
     private function isAuthorized()
     {
+        $response = $this->getResponse();
+
         if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on') {
-            $this->notAuthorized();
+            $response->setHeader('HTTP/1.0', '403 Forbidden');
             $this->log("The request isn't using HTTPS");
             return false;
         }
 
-        $apiKey = $this->getRequestApiKey();
+        $apiKey = $this->authenticate();
 
-        if (!$apiKey) {
-            $this->notAuthorized();
-            $this->log("No API key in request authorization header");
-            return false;
-        }
-        
-        if ($apiKey != $this->helper()->getApiKey()) {
-            $this->notAuthorized();
-            $this->log("Incorrect API key");
+        if ($apiKey === false) {
+            $response->setHeader('HTTP/1.0', '403 Forbidden');
+            $this->log("{$_SERVER['REMOTE_ADDR']} is not authenticated");
             return false;
         }
         
         if (!Mage::getStoreConfig('coefficient/api/enabled')) {
-            $this->notAuthorized();
+            $response->setHeader('HTTP/1.0', '403 Forbidden');
             $this->log("API access isn't enabled");
             return false;
         }
 
         return true;
+    }
+
+    public function preDispatch()
+    {
+        $res = parent::preDispatch();
+        $version = $this->helper()->getExtensionVersion();
+        $this->getResponse()->setHeader('X-Extension-Version', $version);
+        return $res;
     }
 
     public function versionAction()
@@ -103,6 +123,7 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
         $customers = array();
 
         foreach ($collection as $customer) {
+            error_log($customer->getBillingRegionId());
             $customers[] = array(
                 'customerId' => $customer->getId(),
                 'createdAt'  => $this->helper()->fromIsoDate($customer->getCreatedAt()),
@@ -266,7 +287,7 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
     private function sendCsvResponse($rows)
     {
         $response = $this->getResponse();
-        $response->setHeader('Content-type', 'text/csv', true);
+        #$response->setHeader('Content-type', 'text/csv', true);
 
         if ($rows) {
             $this->writeCsv($rows);
@@ -291,6 +312,28 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
         }
         fclose($fh);
     }
+
+    /**
+     * Function to parse the http auth header.
+     * Taken from http://php.net/manual/en/features.http-auth.php
+     */
+    function httpDigestParse($txt)
+    {
+        // protect against missing data
+        $needed_parts = array('nonce'=>1, 'nc'=>1, 'cnonce'=>1, 'qop'=>1, 'username'=>1, 'uri'=>1, 'response'=>1);
+        $data = array();
+        $keys = implode('|', array_keys($needed_parts));
+    
+        preg_match_all('@(' . $keys . ')=(?:([\'"])([^\2]+?)\2|([^\s,]+))@', $txt, $matches, PREG_SET_ORDER);
+    
+        foreach ($matches as $m) {
+            $data[$m[1]] = $m[3] ? $m[3] : $m[4];
+            unset($needed_parts[$m[1]]);
+        }
+    
+        return $needed_parts ? false : $data;
+    }
+
 }
 
 ?>
