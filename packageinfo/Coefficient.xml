@@ -10,9 +10,9 @@
 automated customer research for direct-to-consumer brands.</description>
    <license>MITL</license>
    <license_uri/>
-   <version>0.0.5</version>
+   <version>0.0.6</version>
    <stability>alpha</stability>
-   <notes>This release adds support for HTTP Digest authentication using an API key and secret. SSL is still required.</notes>
+   <notes>This release adds support for HTTP Digest authentication using an API key and secret.</notes>
    <authors>
       <name>
          <name>Skyler Slade</name>
@@ -41,7 +41,7 @@ automated customer research for direct-to-consumer brands.</description>
             <max/>
          </max>
          <files>
-            <files>                 </files>
+            <files>                    </files>
          </files>
       </package>
       <extension>
