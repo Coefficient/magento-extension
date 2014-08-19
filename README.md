@@ -42,7 +42,7 @@ Modman is available at https://github.com/colinmollenhour/modman. You can use it
 installer or just download https://raw.github.com/colinmollenhour/modman/master/modman
 directly.  Move it somewhere like `/usr/local/bin` and make it executable.
 
-#### Modman usage
+#### Modman install
 
 *Note: For some reason I couldn't get Modman to work unless I was root. I double
 checked my permissions, and the directories of my Magento install are writable by
@@ -58,6 +58,11 @@ Next, from within the root of your local Magento install (e.g. `/opt/sites/magen
 run `modman link /path/to/coefficient-magento` which will symlink all of our
 extension's files and directories to their appropriate places in our local Magento
 install.
+
+#### Modman uninstall
+From your Magento install directory, just delete the symlinks:
+
+    find . -type l -exec rm {} \;
 
 ### Magento config
 You need to enable "Allow Symlinks" in Magento's config. This is outlined in Modman's
