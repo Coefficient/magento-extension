@@ -52,11 +52,11 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
         $A2 = md5($_SERVER['REQUEST_METHOD'].':'.$data['uri']);
         $valid_response = md5($A1.':'.$data['nonce'].':'.$data['nc'].':'.$data['cnonce'].':'.$data['qop'].':'.$A2);
 
-        if ($valid_response != $data['response']) {
+        if ($valid_response == $data['response']) {
+            return $data['username'];
+        } else {
             $this->log("{$_SERVER['REMOTE_ADDR']} did not generate a valid signature: sending HTTP 401");
             return false;
-        } else {
-            return $data['username'];
         }
     }
 
@@ -77,6 +77,8 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
             $this->log("{$_SERVER['REMOTE_ADDR']} is not authenticated");
             return false;
         }
+
+        $this->log("api key is: $apiKey");
         
         if (!Mage::getStoreConfig('coefficient/api/enabled')) {
             $response->setHeader('HTTP/1.0', '403 Forbidden');
@@ -85,14 +87,6 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
         }
 
         return true;
-    }
-
-    public function preDispatch()
-    {
-        $res = parent::preDispatch();
-        $version = $this->helper()->getExtensionVersion();
-        $this->getResponse()->setHeader('X-Extension-Version', $version);
-        return $res;
     }
 
     public function versionAction()
@@ -287,7 +281,7 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
     private function sendCsvResponse($rows)
     {
         $response = $this->getResponse();
-        #$response->setHeader('Content-type', 'text/csv', true);
+        $response->setHeader('Content-type', 'text/csv', true);
 
         if ($rows) {
             $this->writeCsv($rows);
