@@ -78,8 +78,6 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
             return false;
         }
 
-        $this->log("api key is: $apiKey");
-        
         if (!Mage::getStoreConfig('coefficient/api/enabled')) {
             $response->setHeader('HTTP/1.0', '403 Forbidden');
             $this->log("API access isn't enabled");
@@ -117,7 +115,6 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
         $customers = array();
 
         foreach ($collection as $customer) {
-            error_log($customer->getBillingRegionId());
             $customers[] = array(
                 'customerId' => $customer->getId(),
                 'createdAt'  => $this->helper()->fromIsoDate($customer->getCreatedAt()),
