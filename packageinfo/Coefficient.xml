@@ -1,13 +1,12 @@
 <_>
-   <form_key>PVhJDQtlslN9XaVn</form_key>
-   <name>Coefficient</name>
+   <form_key>ctSrBDNGhJAwolQL</form_key>
+   <name>Tandem</name>
    <channel>community</channel>
    <version_ids>
       <version_ids>2</version_ids>
    </version_ids>
-   <summary>This extension connects Magento to Coefficient to help you better understand your customers by analyzing their purchases.</summary>
-   <description>Coefficient helps you understand your customers and grow your business. We are
-automated customer research for direct-to-consumer brands.</description>
+   <summary>This extension connects Tandem to your Magento store to help you better understand your customers by analyzing their purchases.</summary>
+   <description>Tandem helps you understand your customers and grow your business. We are automated customer research for direct-to-consumer brands.</description>
    <license>MITL</license>
    <license_uri/>
    <version>0.0.6</version>
@@ -21,7 +20,7 @@ automated customer research for direct-to-consumer brands.</description>
          <user>coefficient</user>
       </user>
       <email>
-         <email>skyler@coefficientinc.com</email>
+         <email>skyler@intandem.io</email>
       </email>
    </authors>
    <depends_php_min>5.3.0</depends_php_min>
@@ -41,7 +40,7 @@ automated customer research for direct-to-consumer brands.</description>
             <max/>
          </max>
          <files>
-            <files>                    </files>
+            <files>                     </files>
          </files>
       </package>
       <extension>

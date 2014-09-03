@@ -1,19 +1,18 @@
 <?xml version="1.0"?>
 <package>
-    <name>Coefficient</name>
+    <name>Tandem</name>
     <version>0.0.6</version>
     <stability>alpha</stability>
     <license>MITL</license>
     <channel>community</channel>
     <extends/>
-    <summary>This extension connects Magento to Coefficient to help you better understand your customers by analyzing their purchases.</summary>
-    <description>Coefficient helps you understand your customers and grow your business. We are&#xD;
-automated customer research for direct-to-consumer brands.</description>
+    <summary>This extension connects Tandem to your Magento store to help you better understand your customers by analyzing their purchases.</summary>
+    <description>Tandem helps you understand your customers and grow your business. We are automated customer research for direct-to-consumer brands.</description>
     <notes>This release adds support for HTTP Digest authentication using an API key and secret.</notes>
-    <authors><author><name>Skyler Slade</name><user>coefficient</user><email>skyler@coefficientinc.com</email></author></authors>
-    <date>2014-08-19</date>
-    <time>20:07:35</time>
-    <contents><target name="magecommunity"><dir name="Coefficient"><dir name="Coefficient"><dir name="Block"><dir name="Adminhtml"><file name="Disabledinput.php" hash="15a161b697109dc18dbbbae7db7c9a56"/><file name="Generatebutton.php" hash="0fdf8282505dcc49f7f694c7e5118585"/></dir></dir><dir name="Helper"><file name="Data.php" hash="20b60444919489a72a61ec61441de4e2"/></dir><dir name="Model"><dir name="Adminhtml"><file name="Apikey.php" hash="defc7c5941c2e7f3306b0d2317d03d22"/><file name="Secret.php" hash="9e161cd69cf9009f9a17e29a1dc46a64"/></dir></dir><dir name="controllers"><dir name="Adminhtml"><file name="CoefficientController.php" hash="cd1c8ab85743267eba96230f6ab9e78c"/></dir><file name="ApiController.php" hash="6d332ea4fa5cfa3463bb304206c4f775"/></dir><dir name="data"><dir name="Coefficient_Coefficient"><file name="data-install-0.0.6.php" hash="db4ec56d25672c1bda9ebd4b65fa36eb"/><file name="data-upgrade-0.0.5-0.0.6.php" hash="d8a7002240ad3ef5aeacd460363f2aed"/></dir></dir><dir name="etc"><file name="config.xml" hash="892c81ec45cf88a62679b08a2ab34be4"/><file name="system.xml" hash="d1fd829c2cce73865606156c4807bf58"/></dir></dir></dir></target><target name="magedesign"><dir name="adminhtml"><dir name="default"><dir name="default"><dir name="layout"><file name="coefficient.xml" hash="3a4a7bc64990e2d36b4387173a72e6d7"/></dir><dir name="template"><dir name="coefficient"><file name="generate_button.phtml" hash="22162bc66f3719e70ee7442e950d9509"/><file name="settings.phtml" hash="d65e427dd14eff5e7ee4d2dd7f1fb9b4"/></dir></dir></dir></dir></dir></target><target name="mageetc"><dir name="modules"><file name="Coefficient_Coefficient.xml" hash="cecc34aa8b8e6708eaed22c6e573da24"/></dir></target></contents>
+    <authors><author><name>Skyler Slade</name><user>coefficient</user><email>skyler@intandem.io</email></author></authors>
+    <date>2014-09-03</date>
+    <time>19:41:13</time>
+    <contents><target name="magecommunity"><dir name="Coefficient"><dir name="Coefficient"><dir name="Block"><dir name="Adminhtml"><file name="Disabledinput.php" hash="15a161b697109dc18dbbbae7db7c9a56"/><file name="Generatebutton.php" hash="0fdf8282505dcc49f7f694c7e5118585"/></dir></dir><dir name="Helper"><file name="Data.php" hash="20b60444919489a72a61ec61441de4e2"/></dir><dir name="Model"><dir name="Adminhtml"><file name="Apikey.php" hash="defc7c5941c2e7f3306b0d2317d03d22"/><file name="Secret.php" hash="9e161cd69cf9009f9a17e29a1dc46a64"/></dir></dir><dir name="controllers"><dir name="Adminhtml"><file name="CoefficientController.php" hash="cd1c8ab85743267eba96230f6ab9e78c"/></dir><file name="ApiController.php" hash="21cd21ef83203e5d621988fdfff50827"/></dir><dir name="data"><dir name="Coefficient_Coefficient"><file name="data-install-0.0.6.php" hash="db4ec56d25672c1bda9ebd4b65fa36eb"/><file name="data-upgrade-0.0.5-0.0.6.php" hash="d8a7002240ad3ef5aeacd460363f2aed"/></dir></dir><dir name="etc"><file name="config.xml" hash="9543ee719e2098970e8a4636742e2c50"/><file name="system.xml" hash="3fa80fcdcbf136aab9a709e03fca641e"/></dir></dir></dir></target><target name="magedesign"><dir name="adminhtml"><dir name="default"><dir name="default"><dir name="layout"><file name="coefficient.xml" hash="3a4a7bc64990e2d36b4387173a72e6d7"/></dir><dir name="template"><dir name="coefficient"><file name="generate_button.phtml" hash="22162bc66f3719e70ee7442e950d9509"/><file name="settings.phtml" hash="d65e427dd14eff5e7ee4d2dd7f1fb9b4"/></dir></dir></dir></dir></dir></target><target name="mageetc"><dir name="modules"><file name="Coefficient_Coefficient.xml" hash="cecc34aa8b8e6708eaed22c6e573da24"/></dir></target></contents>
     <compatible/>
     <dependencies><required><php><min>5.3.0</min><max>5.5.14</max></php></required></dependencies>
 </package>

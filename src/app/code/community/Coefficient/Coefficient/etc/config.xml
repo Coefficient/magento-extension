@@ -89,7 +89,7 @@ see the LICENSE file.
                                 <config>
                                     <children>
                                         <coefficient>
-                                            <title>Coefficient API Configuration</title>
+                                            <title>Tandem API Configuration</title>
                                         </coefficient>
                                     </children>
                                 </config>
