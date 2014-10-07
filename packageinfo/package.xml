@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <package>
     <name>Tandem</name>
-    <version>0.0.6</version>
+    <version>0.2.1</version>
     <stability>alpha</stability>
     <license>MITL</license>
     <channel>community</channel>
     <extends/>
     <summary>This extension connects Tandem to your Magento store to help you better understand your customers by analyzing their purchases.</summary>
     <description>Tandem helps you understand your customers and grow your business. We are automated customer research for direct-to-consumer brands.</description>
-    <notes>This release adds support for HTTP Digest authentication using an API key and secret.</notes>
+    <notes>This release fixes an HTTP Digest authentication bug that occurs when running PHP in CGI mode.</notes>
     <authors><author><name>Skyler Slade</name><user>coefficient</user><email>skyler@intandem.io</email></author></authors>
     <date>2014-09-03</date>
     <time>19:41:13</time>

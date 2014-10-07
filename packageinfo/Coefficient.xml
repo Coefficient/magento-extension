@@ -9,9 +9,9 @@
    <description>Tandem helps you understand your customers and grow your business. We are automated customer research for direct-to-consumer brands.</description>
    <license>MITL</license>
    <license_uri/>
-   <version>0.0.6</version>
+   <version>0.2.1</version>
    <stability>alpha</stability>
-   <notes>This release adds support for HTTP Digest authentication using an API key and secret.</notes>
+   <notes>This release fixes an HTTP Digest authentication bug that occurs when running PHP in CGI mode.</notes>
    <authors>
       <name>
          <name>Skyler Slade</name>
