@@ -25,22 +25,54 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
     }
 
     /**
-     * Authenticate the request using Digest auth.
+     * Running PHP in CGI mode you don't get access to PHP_AUTH_DIGEST.
+     * There's a workaround using an Apache RewriteRule which thankfully
+     * Magento already has included in its .htaccess file.
      *
-     * Taken from http://php.net/manual/en/features.http-auth.php
+     * For reference, that rule is:
+     * `RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]`
      */
+    private function getAuthorizationHeaderValue()
+    {
+        // Depending on Apache version the rewritten variable can
+        // be prepended with 'REDIRECT_'.
+        $headers = array(
+            'PHP_AUTH_DIGEST',
+            'HTTP_AUTHORIZATION',
+            'REDIRECT_HTTP_AUTHORIZATION',
+        );
+        foreach ($headers as $name) {
+            if (!empty($_SERVER[$name])) {
+                return $_SERVER[$name];
+            }
+        }
+        return null;
+    }
+
+   /**
+    * Authenticate the request using Digest auth.
+    *
+    * If the digest header is not present in the request, the 401 Unauthorized
+    * header is sent directly by this method and execution stops.
+    *
+    * @return string|bool If authentication is successful, returns the API key.
+    * If otherwise, returns false. Upon receiving false, calling code should
+    * set the 403 Unauthorized header.
+    *
+    * This implementation is based on the example at http://php.net/manual/en/features.http-auth.php.
+    */
     private function authenticate()
     {
-        # We send Digest headers directly.
-        if (empty($_SERVER['PHP_AUTH_DIGEST'])) {
+        $digest = $this->getAuthorizationHeaderValue();
+        if (empty($digest)) {
             header('HTTP/1.1 401 Unauthorized');
             header('WWW-Authenticate: Digest realm="'.self::DIGEST_REALM.
                    '",qop="auth",nonce="'.uniqid().'",opaque="'.md5(self::DIGEST_REALM).'"');
 
-            die('Not authenticated');
+            die('Not authorized');
         }
 
-        $data = $this->httpDigestParse($_SERVER['PHP_AUTH_DIGEST']);
+        $data = $this->httpDigestParse($digest);
         if (!$data) {
             return false;
         }
@@ -55,7 +87,7 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
         if ($valid_response == $data['response']) {
             return $data['username'];
         } else {
-            $this->log("{$_SERVER['REMOTE_ADDR']} did not generate a valid signature: sending HTTP 401");
+            $this->log("{$_SERVER['REMOTE_ADDR']} did not generate a valid signature");
             return false;
         }
     }
@@ -74,7 +106,7 @@ class Coefficient_Coefficient_ApiController extends Mage_Core_Controller_Front_A
 
         if ($apiKey === false) {
             $response->setHeader('HTTP/1.0', '403 Forbidden');
-            $this->log("{$_SERVER['REMOTE_ADDR']} is not authenticated");
+            $this->log("{$_SERVER['REMOTE_ADDR']} is not authorized");
             return false;
         }
 
