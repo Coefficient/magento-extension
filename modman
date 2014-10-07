@@ -4,3 +4,5 @@ src/app/code/community/Coefficient/Coefficient                      app/code/com
 src/app/design/adminhtml/default/default/layout/coefficient.xml     app/design/adminhtml/default/default/layout/coefficient.xml
 src/app/design/adminhtml/default/default/template/coefficient       app/design/adminhtml/default/default/template/coefficient
 src/app/etc/modules/Coefficient_Coefficient.xml                     app/etc/modules/Coefficient_Coefficient.xml
+packageinfo/Coefficient.xml                                         var/connect/Coefficient.xml
+packageinfo/package.xml                                             var/connect/package.xml
